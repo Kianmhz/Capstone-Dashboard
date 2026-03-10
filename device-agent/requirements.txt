@@ -1,0 +1,16 @@
+# device-agent/requirements.txt
+# Install with: pip install -r requirements.txt
+
+flask>=3.0
+flask-cors>=4.0
+Pillow>=10.0        # used by dummy camera and picamera2 backend
+
+# ── Choose ONE camera backend ─────────────────────────────────────────────────
+
+# For USB webcam / built-in camera (PC or Pi):
+opencv-python-headless>=4.9
+
+# For Raspberry Pi camera module (CSI ribbon cable):
+# picamera2 is pre-installed on Raspberry Pi OS — do not pip install it.
+# If you're on a clean venv, install with:
+#   pip install picamera2
