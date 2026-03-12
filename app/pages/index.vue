@@ -15,6 +15,23 @@ const {
   logs,
 } = useDevices()
 
+const deviceRefs = {
+  pc,
+  pi,
+}
+
+function handleStart(deviceId) {
+  return startDevice(deviceRefs[deviceId])
+}
+
+function handleStop(deviceId) {
+  return stopDevice(deviceRefs[deviceId])
+}
+
+function handleRefresh(deviceId) {
+  return fetchStatus(deviceRefs[deviceId])
+}
+
 // Expose device agent base URLs to the client so the video <img> src can
 // point directly at the agent (avoids proxying a large MJPEG stream).
 // These are public URLs — intentionally exposed via publicRuntimeConfig.
@@ -127,16 +144,16 @@ function clearLogs() {
           <DeviceCard
             :device="pc"
             :video-url="pcVideoUrl"
-            @start="startDevice(pc)"
-            @stop="stopDevice(pc)"
-            @refresh="fetchStatus(pc)"
+            @start="handleStart('pc')"
+            @stop="handleStop('pc')"
+            @refresh="handleRefresh('pc')"
           />
           <DeviceCard
             :device="pi"
             :video-url="piVideoUrl"
-            @start="startDevice(pi)"
-            @stop="stopDevice(pi)"
-            @refresh="fetchStatus(pi)"
+            @start="handleStart('pi')"
+            @stop="handleStop('pi')"
+            @refresh="handleRefresh('pi')"
           />
         </div>
 
