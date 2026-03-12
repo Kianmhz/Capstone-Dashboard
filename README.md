@@ -24,7 +24,8 @@ Browser → Nuxt Dashboard (this app) → Device Agent (PC or Pi)
 
 ```
 Capstone-Dashboard/
-├── .env                              ← Agent base URLs (not committed in prod)
+├── .env.example                      ← Template for local agent base URLs
+├── .env                              ← Local env overrides (ignored by git)
 ├── nuxt.config.ts                    ← Nuxt UI module + runtimeConfig
 ├── app/
 │   ├── app.vue                       ← Root shell
@@ -70,7 +71,7 @@ Example `/status` response:
 
 ## Environment Variables
 
-Copy `.env` and set the real IP addresses of your devices:
+Copy `.env.example` to `.env`, then set the real IP addresses of your devices:
 
 ```bash
 PC_AGENT_URL=http://<pc-ip>:<port>
