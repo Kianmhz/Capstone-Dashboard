@@ -42,6 +42,65 @@ const showVideo = computed(() => props.device.online === true)
 
 // Append cache-buster so the <img> re-fetches after a hard refresh
 const videoSrc = computed(() => `${props.videoUrl}/video_feed`)
+
+const isExpanded = ref(false)
+const expandedVideoContainer = ref(null)
+
+function openExpanded() {
+  if (!showVideo.value) return
+  isExpanded.value = true
+}
+
+async function closeExpanded() {
+  isExpanded.value = false
+
+  if (!import.meta.client) return
+  if (document.fullscreenElement && document.exitFullscreen) {
+    try {
+      await document.exitFullscreen()
+    } catch {
+      // Ignore browser-specific fullscreen exit issues.
+    }
+  }
+}
+
+async function toggleExpandedFullscreen() {
+  if (!import.meta.client) return
+  const container = expandedVideoContainer.value
+  if (!container) return
+
+  try {
+    if (document.fullscreenElement && document.exitFullscreen) {
+      await document.exitFullscreen()
+      return
+    }
+
+    if (container.requestFullscreen) {
+      await container.requestFullscreen()
+      return
+    }
+
+    if (container.webkitRequestFullscreen) {
+      container.webkitRequestFullscreen()
+    }
+  } catch {
+    // Fallback is the expanded overlay itself.
+  }
+}
+
+function onGlobalKeydown(event) {
+  if (event.key === 'Escape' && isExpanded.value) {
+    closeExpanded()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onGlobalKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', onGlobalKeydown)
+})
 </script>
 
 <template>
@@ -79,6 +138,16 @@ const videoSrc = computed(() => `${props.videoUrl}/video_feed`)
             <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse inline-block"></span>
             Live
           </span>
+          <UButton
+            size="xs"
+            color="neutral"
+            variant="solid"
+            icon="heroicons:arrows-pointing-out"
+            class="absolute top-2 right-2"
+            @click.stop="openExpanded"
+          >
+            Expand
+          </UButton>
         </template>
         <template v-else>
           <div class="flex flex-col items-center gap-2 text-gray-500">
@@ -134,4 +203,53 @@ const videoSrc = computed(() => `${props.videoUrl}/video_feed`)
       </div>
     </div>
   </UCard>
+
+  <Teleport to="body">
+    <div
+      v-if="isExpanded"
+      class="fixed inset-0 z-100 bg-black/90 p-4 sm:p-6 flex flex-col"
+      @click.self="closeExpanded"
+    >
+      <div class="mx-auto w-full max-w-6xl flex items-center justify-between gap-3 text-gray-100">
+        <div class="flex items-center gap-2 min-w-0">
+          <UIcon :name="device.icon" class="text-xl shrink-0 text-primary" />
+          <span class="font-semibold truncate">{{ device.label }} Live Feed</span>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <UButton
+            color="neutral"
+            variant="solid"
+            size="sm"
+            icon="heroicons:arrows-pointing-out"
+            @click="toggleExpandedFullscreen"
+          >
+            Fullscreen
+          </UButton>
+          <UButton
+            color="error"
+            variant="solid"
+            size="sm"
+            icon="heroicons:x-mark"
+            @click="closeExpanded"
+          >
+            Close
+          </UButton>
+        </div>
+      </div>
+
+      <div class="mx-auto mt-4 w-full max-w-6xl flex-1 min-h-0">
+        <div
+          ref="expandedVideoContainer"
+          class="h-full w-full rounded-lg overflow-hidden bg-black border border-gray-700 flex items-center justify-center"
+        >
+          <img
+            :src="videoSrc"
+            :alt="`${device.label} video feed`"
+            class="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
