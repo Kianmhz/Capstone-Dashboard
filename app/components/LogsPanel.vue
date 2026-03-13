@@ -1,6 +1,6 @@
 <script setup>
 // components/LogsPanel.vue
-// Scrollable timestamped event log
+// Scrollable timestamped quantum event log
 
 const props = defineProps({
   logs: {
@@ -34,7 +34,7 @@ const iconMap = {
 }
 
 const colorMap = {
-  info:    'text-blue-400',
+  info:    'text-cyan-400',
   success: 'text-green-400',
   error:   'text-red-400',
   warning: 'text-yellow-400',
@@ -51,12 +51,12 @@ function formatTime(date) {
 </script>
 
 <template>
-  <UCard>
+  <UCard class="quantum-card">
     <template #header>
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <UIcon name="heroicons:command-line" class="text-xl text-primary" />
-          <span class="font-semibold text-base">Event Log</span>
+          <UIcon name="heroicons:beaker" class="text-xl text-cyan-400" />
+          <span class="font-semibold text-base">Quantum Event Log</span>
           <UBadge color="neutral" variant="subtle" size="xs">
             {{ logs.length }}
           </UBadge>
@@ -79,21 +79,22 @@ function formatTime(date) {
     <UScrollArea ref="scrollArea" class="h-72">
       <div
         v-if="logs.length === 0"
-        class="flex items-center justify-center h-72 text-gray-500 text-sm"
+        class="flex flex-col items-center justify-center h-72 gap-2 text-cyan-900/60 text-sm"
       >
-        No events yet — actions will appear here.
+        <UIcon name="heroicons:beaker" class="text-2xl" />
+        <span>No quantum events — transmissions will appear here.</span>
       </div>
 
       <div
         v-for="entry in logs"
         :key="entry.id"
-        class="flex items-start gap-2 py-1.5 px-1 border-b border-gray-800 last:border-0 font-mono text-xs hover:bg-gray-800/30 transition-colors"
+        class="flex items-start gap-2 py-1.5 px-1 border-b border-gray-800/60 last:border-0 font-mono text-xs transition-colors quantum-log-entry"
       >
         <UIcon
           :name="iconMap[entry.type] || iconMap.info"
           :class="['text-base shrink-0 mt-0.5', colorMap[entry.type] || colorMap.info]"
         />
-        <span class="text-gray-500 shrink-0 tabular-nums">{{ formatTime(entry.timestamp) }}</span>
+        <span class="text-cyan-700/70 shrink-0 tabular-nums">{{ formatTime(entry.timestamp) }}</span>
         <span class="text-gray-200 break-all">{{ entry.message }}</span>
       </div>
     </UScrollArea>

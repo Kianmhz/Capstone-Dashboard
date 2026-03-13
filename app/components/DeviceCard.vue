@@ -23,8 +23,8 @@ const onlineBadgeColor = computed(() => {
 })
 
 const onlineBadgeLabel = computed(() => {
-  if (props.device.online === null) return 'Unknown'
-  return props.device.online ? 'Online' : 'Offline'
+  if (props.device.online === null) return 'Superposition'
+  return props.device.online ? 'Entangled' : 'Decoherent'
 })
 
 const runningBadgeColor = computed(() => {
@@ -34,7 +34,7 @@ const runningBadgeColor = computed(() => {
 
 const runningBadgeLabel = computed(() => {
   if (props.device.running === null) return 'Unknown'
-  return props.device.running ? 'Running' : 'Stopped'
+  return props.device.running ? 'Active' : 'Idle'
 })
 
 const chipColor = computed(() => {
@@ -110,13 +110,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <UCard class="h-full flex flex-col">
+  <UCard class="h-full flex flex-col quantum-card">
     <!-- ── Header ─────────────────────────────────────────────────────────── -->
     <template #header>
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
           <UChip :color="chipColor" inset size="sm">
-            <UIcon :name="device.icon" class="text-2xl text-gray-200" />
+            <UIcon :name="device.icon" class="text-2xl text-cyan-200" />
           </UChip>
           <span class="font-semibold text-lg truncate">{{ device.label }}</span>
         </div>
@@ -135,14 +135,14 @@ onUnmounted(() => {
     <div class="flex flex-col gap-4 flex-1">
 
       <!-- Video Preview -->
-      <div class="rounded-lg overflow-hidden bg-gray-900 border border-gray-700 aspect-video flex items-center justify-center relative">
+      <div class="rounded-lg overflow-hidden bg-gray-950 border quantum-video aspect-video flex items-center justify-center relative">
 
         <!-- Skeleton while status is unknown -->
         <template v-if="isLoading">
           <USkeleton class="absolute inset-0 w-full h-full rounded-lg" />
-          <div class="relative z-10 flex flex-col items-center gap-2 text-gray-500">
-            <UIcon name="heroicons:signal" class="text-3xl animate-pulse" />
-            <span class="text-xs">Connecting…</span>
+          <div class="relative z-10 flex flex-col items-center gap-2 text-cyan-500/60">
+            <UIcon name="heroicons:cpu-chip" class="text-3xl animate-pulse" />
+            <span class="text-xs tracking-widest uppercase">Initializing quantum state…</span>
           </div>
         </template>
 
@@ -153,8 +153,8 @@ onUnmounted(() => {
             alt="Video feed"
             class="w-full h-full object-cover"
           />
-          <span class="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-            <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse inline-block"></span>
+          <span class="absolute top-2 left-2 text-xs font-bold px-2 py-0.5 rounded uppercase flex items-center gap-1 quantum-live-badge">
+            <span class="w-1.5 h-1.5 bg-black/40 rounded-full animate-pulse inline-block"></span>
             Live
           </span>
           <UTooltip text="Open fullscreen preview" :delay-duration="400">
@@ -173,9 +173,9 @@ onUnmounted(() => {
 
         <!-- Offline placeholder -->
         <template v-else>
-          <div class="flex flex-col items-center gap-2 text-gray-500">
-            <UIcon name="heroicons:video-camera-slash" class="text-4xl" />
-            <span class="text-sm">Feed unavailable</span>
+          <div class="flex flex-col items-center gap-2 text-cyan-900/80">
+            <UIcon name="heroicons:signal-slash" class="text-4xl" />
+            <span class="text-sm tracking-wide">No quantum channel</span>
           </div>
         </template>
 
@@ -193,7 +193,7 @@ onUnmounted(() => {
       <!-- Action buttons -->
       <div class="flex items-center gap-2 flex-wrap">
         <UTooltip
-          :text="device.running === true ? 'Already running' : 'Start the agent process'"
+          :text="device.running === true ? 'Node already active' : 'Initialize quantum node'"
           :delay-duration="400"
         >
           <UButton
@@ -205,12 +205,12 @@ onUnmounted(() => {
             class="flex-1"
             @click="emit('start')"
           >
-            Start
+            Activate
           </UButton>
         </UTooltip>
 
         <UTooltip
-          :text="device.running === false ? 'Already stopped' : 'Stop the agent process'"
+          :text="device.running === false ? 'Node already idle' : 'Halt quantum node'"
           :delay-duration="400"
         >
           <UButton
@@ -222,11 +222,11 @@ onUnmounted(() => {
             class="flex-1"
             @click="emit('stop')"
           >
-            Stop
+            Halt
           </UButton>
         </UTooltip>
 
-        <UTooltip text="Refresh device status" :delay-duration="400">
+        <UTooltip text="Re-measure quantum state" :delay-duration="400">
           <UButton
             color="neutral"
             variant="outline"
@@ -243,15 +243,16 @@ onUnmounted(() => {
   <Teleport to="body">
     <div
       v-if="isExpanded"
-      class="fixed inset-0 z-100 bg-black/90 p-4 sm:p-6 flex flex-col"
+      class="fixed inset-0 z-100 bg-black/95 p-4 sm:p-6 flex flex-col"
+      style="background-image: radial-gradient(ellipse at 50% 50%, rgba(34, 211, 238, 0.04) 0%, transparent 70%);"
       @click.self="closeExpanded"
     >
       <div class="mx-auto w-full max-w-6xl flex items-center justify-between gap-3 text-gray-100">
         <div class="flex items-center gap-2 min-w-0">
           <UChip :color="chipColor" inset size="sm">
-            <UIcon :name="device.icon" class="text-xl text-gray-200" />
+            <UIcon :name="device.icon" class="text-xl text-cyan-200" />
           </UChip>
-          <span class="font-semibold truncate">{{ device.label }} Live Feed</span>
+          <span class="font-semibold truncate">{{ device.label }} · Live Feed</span>
         </div>
 
         <div class="flex items-center gap-2 shrink-0">
@@ -279,7 +280,7 @@ onUnmounted(() => {
       <div class="mx-auto mt-4 w-full max-w-6xl flex-1 min-h-0">
         <div
           ref="expandedVideoContainer"
-          class="h-full w-full rounded-lg overflow-hidden bg-black border border-gray-700 flex items-center justify-center"
+          class="h-full w-full rounded-lg overflow-hidden bg-black border quantum-video flex items-center justify-center"
         >
           <img
             :src="videoSrc"

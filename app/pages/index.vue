@@ -66,24 +66,24 @@ const piOnlineColor = computed(() => {
       <UDashboardSidebar>
         <template #header>
           <div class="flex items-center gap-3 px-1 py-1">
-            <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10">
-              <UIcon name="heroicons:signal" class="text-xl text-primary" />
+            <div class="flex items-center justify-center w-9 h-9 rounded-lg quantum-brand-icon">
+              <UIcon name="heroicons:cpu-chip" class="text-xl text-cyan-400" />
             </div>
             <div>
-              <p class="font-bold text-sm leading-none">Capstone</p>
-              <p class="text-xs text-gray-400 mt-0.5">Control Dashboard</p>
+              <p class="font-bold text-sm leading-none tracking-wide">Q-IoT Control</p>
+              <p class="text-xs text-cyan-500/70 mt-0.5">Quantum Computing · IoT</p>
             </div>
           </div>
         </template>
 
         <div class="px-2 space-y-5 py-2">
 
-          <!-- Devices section -->
+          <!-- Quantum Nodes section -->
           <div class="space-y-1">
-            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">Devices</p>
+            <p class="text-xs font-semibold uppercase px-2 mb-2 quantum-section-label">Quantum Nodes</p>
 
             <!-- PC row -->
-            <div class="flex items-center gap-2.5 rounded-lg px-2 py-2 hover:bg-gray-800/50 transition-colors">
+            <div class="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors quantum-device-row">
               <UChip :color="pcOnlineColor" inset size="sm" class="shrink-0">
                 <UIcon name="heroicons:computer-desktop" class="text-xl text-gray-300" />
               </UChip>
@@ -95,21 +95,21 @@ const piOnlineColor = computed(() => {
                     variant="subtle"
                     size="xs"
                   >
-                    {{ pc.online === null ? '—' : pc.online ? 'Online' : 'Offline' }}
+                    {{ pc.online === null ? '—' : pc.online ? 'Entangled' : 'Decoherent' }}
                   </UBadge>
                   <UBadge
                     :color="pc.running ? 'info' : 'warning'"
                     variant="subtle"
                     size="xs"
                   >
-                    {{ pc.running === null ? '—' : pc.running ? 'Running' : 'Stopped' }}
+                    {{ pc.running === null ? '—' : pc.running ? 'Active' : 'Idle' }}
                   </UBadge>
                 </div>
               </div>
             </div>
 
             <!-- Pi row -->
-            <div class="flex items-center gap-2.5 rounded-lg px-2 py-2 hover:bg-gray-800/50 transition-colors">
+            <div class="flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors quantum-device-row">
               <UChip :color="piOnlineColor" inset size="sm" class="shrink-0">
                 <UIcon name="heroicons:cpu-chip" class="text-xl text-gray-300" />
               </UChip>
@@ -121,14 +121,14 @@ const piOnlineColor = computed(() => {
                     variant="subtle"
                     size="xs"
                   >
-                    {{ pi.online === null ? '—' : pi.online ? 'Online' : 'Offline' }}
+                    {{ pi.online === null ? '—' : pi.online ? 'Entangled' : 'Decoherent' }}
                   </UBadge>
                   <UBadge
                     :color="pi.running ? 'info' : 'warning'"
                     variant="subtle"
                     size="xs"
                   >
-                    {{ pi.running === null ? '—' : pi.running ? 'Running' : 'Stopped' }}
+                    {{ pi.running === null ? '—' : pi.running ? 'Active' : 'Idle' }}
                   </UBadge>
                 </div>
               </div>
@@ -137,9 +137,9 @@ const piOnlineColor = computed(() => {
 
           <USeparator />
 
-          <!-- Global actions section -->
+          <!-- Network Control section -->
           <div class="space-y-2">
-            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">Global Actions</p>
+            <p class="text-xs font-semibold uppercase px-2 mb-2 quantum-section-label">Network Control</p>
             <UButton
               block
               color="success"
@@ -149,7 +149,7 @@ const piOnlineColor = computed(() => {
               size="sm"
               @click="startBoth"
             >
-              Start Both
+              Entangle All
             </UButton>
             <UButton
               block
@@ -160,7 +160,7 @@ const piOnlineColor = computed(() => {
               size="sm"
               @click="stopBoth"
             >
-              Stop Both
+              Decohere All
             </UButton>
             <UButton
               block
@@ -171,16 +171,16 @@ const piOnlineColor = computed(() => {
               size="sm"
               @click="refreshAll"
             >
-              Refresh All
+              Sync States
             </UButton>
           </div>
 
         </div>
 
         <template #footer>
-          <div class="flex items-center gap-2 px-3 py-2 text-xs text-gray-500">
-            <UIcon name="heroicons:clock" class="text-sm shrink-0" />
-            <span>Auto-refresh every 8s · Proxied via Nuxt</span>
+          <div class="flex items-center gap-2 px-3 py-2 text-xs text-cyan-500/50 quantum-footer">
+            <UIcon name="heroicons:signal" class="text-sm shrink-0" />
+            <span>Quantum state sync every 8s · QKD secured</span>
           </div>
         </template>
       </UDashboardSidebar>
@@ -188,14 +188,14 @@ const piOnlineColor = computed(() => {
       <!-- ── Main panel ─────────────────────────────────────────────────────── -->
       <UDashboardPanel>
         <template #header>
-          <UDashboardNavbar title="Distributed Systems Demo" icon="heroicons:signal">
+          <UDashboardNavbar title="Quantum Node Monitor" icon="heroicons:cpu-chip">
             <template #right>
-              <span class="text-xs text-gray-400 hidden sm:block">March 2026</span>
+              <span class="text-xs text-cyan-500/60 hidden sm:block tracking-wide">Q-IoT · March 2026</span>
             </template>
           </UDashboardNavbar>
         </template>
 
-        <div class="p-4 sm:p-6 space-y-6 overflow-y-auto">
+        <div class="p-4 sm:p-6 space-y-6 overflow-y-auto quantum-bg min-h-full">
 
           <!-- Device cards -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
