@@ -63,11 +63,11 @@ function formatTime(date) {
         </div>
         <UTooltip text="Clear all log entries" :delay-duration="400">
           <UButton
-            v-if="logs.length > 0"
             color="primary"
             variant="ghost"
             size="xs"
             icon="heroicons:trash"
+            :class="logs.length === 0 ? 'invisible pointer-events-none' : ''"
             @click="emit('clear')"
           >
             Clear

@@ -161,7 +161,7 @@ onUnmounted(() => {
             <UButton
               size="xs"
               color="primary"
-              variant="ghost"
+              variant="solid"
               icon="heroicons:arrows-pointing-out"
               class="absolute top-2 right-2"
               @click.stop="openExpanded"
@@ -180,15 +180,6 @@ onUnmounted(() => {
         </template>
 
       </div>
-
-      <!-- Error alert -->
-      <UAlert
-        v-if="device.error"
-        color="error"
-        variant="subtle"
-        :description="device.error"
-        icon="heroicons:exclamation-triangle"
-      />
 
       <!-- Action buttons -->
       <div class="flex items-center gap-2 flex-wrap">
@@ -236,6 +227,17 @@ onUnmounted(() => {
             @click="emit('refresh')"
           />
         </UTooltip>
+      </div>
+
+      <!-- Error alert — always occupies space to prevent CLS on periodic refresh -->
+      <div class="min-h-13">
+        <UAlert
+          v-if="device.error"
+          color="error"
+          variant="subtle"
+          :description="device.error"
+          icon="heroicons:exclamation-triangle"
+        />
       </div>
     </div>
   </UCard>
