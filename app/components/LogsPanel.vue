@@ -48,6 +48,7 @@ function formatTime(date) {
     hour12: false,
   })
 }
+
 </script>
 
 <template>

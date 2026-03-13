@@ -228,9 +228,6 @@ onUnmounted(() => {
           />
         </UTooltip>
       </div>
-
-      <!-- Error alert — always occupies space to prevent CLS on periodic refresh -->
-      <div class="min-h-13">
         <UAlert
           v-if="device.error"
           color="error"
@@ -239,7 +236,6 @@ onUnmounted(() => {
           icon="heroicons:exclamation-triangle"
         />
       </div>
-    </div>
   </UCard>
 
   <Teleport to="body">

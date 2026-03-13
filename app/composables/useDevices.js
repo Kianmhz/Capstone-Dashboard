@@ -40,29 +40,40 @@ export function useDevices() {
 
   // ── fetch status ────────────────────────────────────────────────────────────
 
-  async function fetchStatus(device) {
-    device.value.loading = true
-    device.value.error = null
+  // silent=true is used by background polling: skips loading spinner, skips log entries,
+  // and only mutates state when values actually changed — preventing visual flash on every poll.
+  async function fetchStatus(device, { silent = false } = {}) {
+    if (!silent) device.value.loading = true
     try {
       const data = await $fetch(`/api/devices/${device.value.id}/status`)
-      device.value.online = data.online ?? false
-      device.value.running = data.running ?? false
+      const newOnline = data.online ?? false
+      const newRunning = data.running ?? false
+
+      // Only write reactive state when values differ to avoid spurious re-renders
+      if (device.value.online !== newOnline) device.value.online = newOnline
+      if (device.value.running !== newRunning) device.value.running = newRunning
+
       if (data._error) {
-        device.value.online = false
-        device.value.running = false
-        device.value.error = data._error
-        appendLog(logs, `${device.value.label} appears offline — ${data._error}`, 'error')
+        if (device.value.online !== false) device.value.online = false
+        if (device.value.running !== false) device.value.running = false
+        if (device.value.error !== data._error) device.value.error = data._error
+        if (!silent) appendLog(logs, `${device.value.label} appears offline — ${data._error}`, 'error')
       } else {
-        appendLog(logs, `${device.value.label} status refreshed`, 'info')
+        // Clear stale error only if one existed — prevents UAlert from flashing null→string→null
+        if (device.value.error !== null) device.value.error = null
+        if (!silent) appendLog(logs, `${device.value.label} status refreshed`, 'info')
       }
     } catch (err) {
-      device.value.online = false
-      device.value.running = false
-      device.value.error = err?.message || 'Unknown error'
-      appendLog(logs, `${device.value.label} status check failed — ${device.value.error}`, 'error')
-      toast.add({ title: `${device.value.label} unreachable`, description: device.value.error, color: 'error' })
+      const errMsg = err?.message || 'Unknown error'
+      if (device.value.online !== false) device.value.online = false
+      if (device.value.running !== false) device.value.running = false
+      if (device.value.error !== errMsg) device.value.error = errMsg
+      if (!silent) {
+        appendLog(logs, `${device.value.label} status check failed — ${errMsg}`, 'error')
+        toast.add({ title: `${device.value.label} unreachable`, description: errMsg, color: 'error' })
+      }
     } finally {
-      device.value.loading = false
+      if (!silent) device.value.loading = false
     }
   }
 
@@ -140,8 +151,9 @@ export function useDevices() {
 
   function startPolling(intervalMs = 8000) {
     const timer = setInterval(() => {
-      fetchStatus(pc)
-      fetchStatus(pi)
+      // silent: true — background refresh must not toggle loading state or write log entries
+      fetchStatus(pc, { silent: true })
+      fetchStatus(pi, { silent: true })
     }, intervalMs)
     onUnmounted(() => clearInterval(timer))
     return timer
