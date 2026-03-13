@@ -76,6 +76,7 @@ const piOnlineColor = computed(() => {
           </div>
         </template>
 
+        <div class="flex flex-col h-full">
         <div class="px-2 space-y-5 py-2">
 
           <!-- Quantum Nodes section -->
@@ -175,6 +176,12 @@ const piOnlineColor = computed(() => {
             </UButton>
           </div>
 
+        </div>
+
+        <!-- Quantum Orb fills remaining sidebar space -->
+        <div class="flex-1 flex items-center justify-center min-h-0 overflow-hidden">
+          <QuantumOrb />
+        </div>
         </div>
 
         <template #footer>
