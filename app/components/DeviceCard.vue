@@ -160,8 +160,8 @@ onUnmounted(() => {
           <UTooltip text="Open fullscreen preview" :delay-duration="400">
             <UButton
               size="xs"
-              color="neutral"
-              variant="solid"
+              color="primary"
+              variant="ghost"
               icon="heroicons:arrows-pointing-out"
               class="absolute top-2 right-2"
               @click.stop="openExpanded"
@@ -197,7 +197,7 @@ onUnmounted(() => {
           :delay-duration="400"
         >
           <UButton
-            color="success"
+            color="primary"
             variant="solid"
             icon="heroicons:play"
             :loading="device.loading"
@@ -214,8 +214,8 @@ onUnmounted(() => {
           :delay-duration="400"
         >
           <UButton
-            color="error"
-            variant="solid"
+            color="primary"
+            variant="outline"
             icon="heroicons:stop"
             :loading="device.loading"
             :disabled="device.loading || device.running === false"
@@ -228,8 +228,8 @@ onUnmounted(() => {
 
         <UTooltip text="Re-measure quantum state" :delay-duration="400">
           <UButton
-            color="neutral"
-            variant="outline"
+            color="primary"
+            variant="soft"
             icon="heroicons:arrow-path"
             :loading="device.loading"
             :disabled="device.loading"
@@ -257,8 +257,8 @@ onUnmounted(() => {
 
         <div class="flex items-center gap-2 shrink-0">
           <UButton
-            color="neutral"
-            variant="solid"
+            color="primary"
+            variant="soft"
             size="sm"
             icon="heroicons:arrows-pointing-out"
             @click="toggleExpandedFullscreen"
@@ -266,8 +266,8 @@ onUnmounted(() => {
             Fullscreen
           </UButton>
           <UButton
-            color="error"
-            variant="solid"
+            color="primary"
+            variant="ghost"
             size="sm"
             icon="heroicons:x-mark"
             @click="closeExpanded"

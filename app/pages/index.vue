@@ -143,7 +143,7 @@ const piOnlineColor = computed(() => {
             <p class="text-xs font-semibold uppercase px-2 mb-2 quantum-section-label">Network Control</p>
             <UButton
               block
-              color="success"
+              color="primary"
               variant="solid"
               icon="heroicons:play-circle"
               :loading="globalLoading"
@@ -154,8 +154,8 @@ const piOnlineColor = computed(() => {
             </UButton>
             <UButton
               block
-              color="error"
-              variant="solid"
+              color="primary"
+              variant="outline"
               icon="heroicons:stop-circle"
               :loading="globalLoading"
               size="sm"
@@ -165,8 +165,8 @@ const piOnlineColor = computed(() => {
             </UButton>
             <UButton
               block
-              color="neutral"
-              variant="outline"
+              color="primary"
+              variant="soft"
               icon="heroicons:arrow-path"
               :loading="globalLoading"
               size="sm"

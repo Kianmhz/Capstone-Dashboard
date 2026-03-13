@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 
+/* ── Override primary color → cyan (Tailwind v4 CSS variable mapping) ── */
+:root {
+  --ui-color-primary-50:  var(--color-cyan-50);
+  --ui-color-primary-100: var(--color-cyan-100);
+  --ui-color-primary-200: var(--color-cyan-200);
+  --ui-color-primary-300: var(--color-cyan-300);
+  --ui-color-primary-400: var(--color-cyan-400);
+  --ui-color-primary-500: var(--color-cyan-500);
+  --ui-color-primary-600: var(--color-cyan-600);
+  --ui-color-primary-700: var(--color-cyan-700);
+  --ui-color-primary-800: var(--color-cyan-800);
+  --ui-color-primary-900: var(--color-cyan-900);
+  --ui-color-primary-950: var(--color-cyan-950);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    QUANTUM IoT THEME — Capstone: Quantum Computing in IoT
    ═══════════════════════════════════════════════════════════════ */

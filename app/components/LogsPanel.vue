@@ -64,7 +64,7 @@ function formatTime(date) {
         <UTooltip text="Clear all log entries" :delay-duration="400">
           <UButton
             v-if="logs.length > 0"
-            color="neutral"
+            color="primary"
             variant="ghost"
             size="xs"
             icon="heroicons:trash"
