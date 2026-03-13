@@ -37,8 +37,14 @@ const runningBadgeLabel = computed(() => {
   return props.device.running ? 'Running' : 'Stopped'
 })
 
+const chipColor = computed(() => {
+  if (props.device.online === null) return 'neutral'
+  return props.device.online ? 'success' : 'error'
+})
+
 // Video preview: show only if device is known to be online
 const showVideo = computed(() => props.device.online === true)
+const isLoading = computed(() => props.device.online === null)
 
 // Append cache-buster so the <img> re-fetches after a hard refresh
 const videoSrc = computed(() => `${props.videoUrl}/video_feed`)
@@ -109,7 +115,9 @@ onUnmounted(() => {
     <template #header>
       <div class="flex items-center justify-between gap-3">
         <div class="flex items-center gap-3 min-w-0">
-          <UIcon :name="device.icon" class="text-2xl shrink-0 text-primary" />
+          <UChip :color="chipColor" inset size="sm">
+            <UIcon :name="device.icon" class="text-2xl text-gray-200" />
+          </UChip>
           <span class="font-semibold text-lg truncate">{{ device.label }}</span>
         </div>
         <div class="flex items-center gap-2 shrink-0">
@@ -128,7 +136,18 @@ onUnmounted(() => {
 
       <!-- Video Preview -->
       <div class="rounded-lg overflow-hidden bg-gray-900 border border-gray-700 aspect-video flex items-center justify-center relative">
-        <template v-if="showVideo">
+
+        <!-- Skeleton while status is unknown -->
+        <template v-if="isLoading">
+          <USkeleton class="absolute inset-0 w-full h-full rounded-lg" />
+          <div class="relative z-10 flex flex-col items-center gap-2 text-gray-500">
+            <UIcon name="heroicons:signal" class="text-3xl animate-pulse" />
+            <span class="text-xs">Connecting…</span>
+          </div>
+        </template>
+
+        <!-- Live feed -->
+        <template v-else-if="showVideo">
           <img
             :src="videoSrc"
             alt="Video feed"
@@ -138,23 +157,28 @@ onUnmounted(() => {
             <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse inline-block"></span>
             Live
           </span>
-          <UButton
-            size="xs"
-            color="neutral"
-            variant="solid"
-            icon="heroicons:arrows-pointing-out"
-            class="absolute top-2 right-2"
-            @click.stop="openExpanded"
-          >
-            Expand
-          </UButton>
+          <UTooltip text="Open fullscreen preview" :delay-duration="400">
+            <UButton
+              size="xs"
+              color="neutral"
+              variant="solid"
+              icon="heroicons:arrows-pointing-out"
+              class="absolute top-2 right-2"
+              @click.stop="openExpanded"
+            >
+              Expand
+            </UButton>
+          </UTooltip>
         </template>
+
+        <!-- Offline placeholder -->
         <template v-else>
           <div class="flex flex-col items-center gap-2 text-gray-500">
             <UIcon name="heroicons:video-camera-slash" class="text-4xl" />
             <span class="text-sm">Feed unavailable</span>
           </div>
         </template>
+
       </div>
 
       <!-- Error alert -->
@@ -168,38 +192,50 @@ onUnmounted(() => {
 
       <!-- Action buttons -->
       <div class="flex items-center gap-2 flex-wrap">
-        <UButton
-          color="success"
-          variant="solid"
-          icon="heroicons:play"
-          :loading="device.loading"
-          :disabled="device.loading || device.running === true"
-          class="flex-1"
-          @click="emit('start')"
+        <UTooltip
+          :text="device.running === true ? 'Already running' : 'Start the agent process'"
+          :delay-duration="400"
         >
-          Start
-        </UButton>
+          <UButton
+            color="success"
+            variant="solid"
+            icon="heroicons:play"
+            :loading="device.loading"
+            :disabled="device.loading || device.running === true"
+            class="flex-1"
+            @click="emit('start')"
+          >
+            Start
+          </UButton>
+        </UTooltip>
 
-        <UButton
-          color="error"
-          variant="solid"
-          icon="heroicons:stop"
-          :loading="device.loading"
-          :disabled="device.loading || device.running === false"
-          class="flex-1"
-          @click="emit('stop')"
+        <UTooltip
+          :text="device.running === false ? 'Already stopped' : 'Stop the agent process'"
+          :delay-duration="400"
         >
-          Stop
-        </UButton>
+          <UButton
+            color="error"
+            variant="solid"
+            icon="heroicons:stop"
+            :loading="device.loading"
+            :disabled="device.loading || device.running === false"
+            class="flex-1"
+            @click="emit('stop')"
+          >
+            Stop
+          </UButton>
+        </UTooltip>
 
-        <UButton
-          color="neutral"
-          variant="outline"
-          icon="heroicons:arrow-path"
-          :loading="device.loading"
-          :disabled="device.loading"
-          @click="emit('refresh')"
-        />
+        <UTooltip text="Refresh device status" :delay-duration="400">
+          <UButton
+            color="neutral"
+            variant="outline"
+            icon="heroicons:arrow-path"
+            :loading="device.loading"
+            :disabled="device.loading"
+            @click="emit('refresh')"
+          />
+        </UTooltip>
       </div>
     </div>
   </UCard>
@@ -212,7 +248,9 @@ onUnmounted(() => {
     >
       <div class="mx-auto w-full max-w-6xl flex items-center justify-between gap-3 text-gray-100">
         <div class="flex items-center gap-2 min-w-0">
-          <UIcon :name="device.icon" class="text-xl shrink-0 text-primary" />
+          <UChip :color="chipColor" inset size="sm">
+            <UIcon :name="device.icon" class="text-xl text-gray-200" />
+          </UChip>
           <span class="font-semibold truncate">{{ device.label }} Live Feed</span>
         </div>
 

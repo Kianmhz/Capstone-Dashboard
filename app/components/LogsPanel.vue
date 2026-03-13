@@ -11,14 +11,17 @@ const props = defineProps({
 
 const emit = defineEmits(['clear'])
 
-const logContainer = ref(null)
+const scrollArea = ref(null)
 
 // Auto-scroll to top (newest entry is at top via unshift)
 watch(
   () => props.logs.length,
   () => {
     nextTick(() => {
-      if (logContainer.value) logContainer.value.scrollTop = 0
+      if (scrollArea.value?.$el) {
+        const viewport = scrollArea.value.$el.querySelector('[data-radix-scroll-area-viewport]')
+        if (viewport) viewport.scrollTop = 0
+      }
     })
   }
 )
@@ -58,26 +61,25 @@ function formatTime(date) {
             {{ logs.length }}
           </UBadge>
         </div>
-        <UButton
-          v-if="logs.length > 0"
-          color="neutral"
-          variant="ghost"
-          size="xs"
-          icon="heroicons:trash"
-          @click="emit('clear')"
-        >
-          Clear
-        </UButton>
+        <UTooltip text="Clear all log entries" :delay-duration="400">
+          <UButton
+            v-if="logs.length > 0"
+            color="neutral"
+            variant="ghost"
+            size="xs"
+            icon="heroicons:trash"
+            @click="emit('clear')"
+          >
+            Clear
+          </UButton>
+        </UTooltip>
       </div>
     </template>
 
-    <div
-      ref="logContainer"
-      class="h-56 overflow-y-auto font-mono text-xs space-y-1 pr-1"
-    >
+    <UScrollArea ref="scrollArea" class="h-72">
       <div
         v-if="logs.length === 0"
-        class="flex items-center justify-center h-full text-gray-500 text-sm font-sans"
+        class="flex items-center justify-center h-72 text-gray-500 text-sm"
       >
         No events yet — actions will appear here.
       </div>
@@ -85,15 +87,15 @@ function formatTime(date) {
       <div
         v-for="entry in logs"
         :key="entry.id"
-        class="flex items-start gap-2 py-1 border-b border-gray-800 last:border-0"
+        class="flex items-start gap-2 py-1.5 px-1 border-b border-gray-800 last:border-0 font-mono text-xs hover:bg-gray-800/30 transition-colors"
       >
         <UIcon
           :name="iconMap[entry.type] || iconMap.info"
           :class="['text-base shrink-0 mt-0.5', colorMap[entry.type] || colorMap.info]"
         />
-        <span class="text-gray-500 shrink-0">{{ formatTime(entry.timestamp) }}</span>
+        <span class="text-gray-500 shrink-0 tabular-nums">{{ formatTime(entry.timestamp) }}</span>
         <span class="text-gray-200 break-all">{{ entry.message }}</span>
       </div>
-    </div>
+    </UScrollArea>
   </UCard>
 </template>
